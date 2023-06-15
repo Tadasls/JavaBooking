@@ -284,20 +284,19 @@ class Hotel
 
     for (int i = 0; i < hotel_ob.deluxe_singleerrom.length; i++) {
         if (hotel_ob.deluxe_singleerrom[i] != null) {
-            System.out.println("Deluxe Vienvietis " + (i + 1) + ": " + hotel_ob.deluxe_singleerrom[i].firstName + ' '+ hotel_ob.deluxe_singleerrom[i].lastName);
+            System.out.println("Uzimtas Deluxe Vienvietis " + (i + 1) + ": Svecio vardas " + hotel_ob.deluxe_singleerrom[i].firstName + " Pavarde " + hotel_ob.deluxe_singleerrom[i].lastName);
             occupiedRoomsExist = true;
         }
     }
     for (int i = 0; i < hotel_ob.luxury_singleerrom.length; i++) {
         if (hotel_ob.luxury_singleerrom[i] != null) {
-            System.out.println("Luxury Vienvietis " + (i + 6 ) + ": " + hotel_ob.luxury_singleerrom[i].firstName+ ' '+ hotel_ob.luxury_singleerrom[i].lastName);
+            System.out.println("Uzimtas Luxury Vienvietis " + (i + 6 ) + ": Svecio vardas " + hotel_ob.luxury_singleerrom[i].firstName+ " Pavarde "+ hotel_ob.luxury_singleerrom[i].lastName);
             occupiedRoomsExist = true;
         }
     }
     if (!occupiedRoomsExist) {
         System.out.println("Visi kambariai laisvi.");
     }
-
 }
 
     static void checkStatus() {
@@ -323,7 +322,30 @@ class Hotel
         
 }
 
-}
+static void roomBookingHistory(int rn, int rtype) {
+    System.out.println("\nKambario uzsakymo istorija:");
+    switch (rtype) {
+        case 1:
+            if (hotel_ob.deluxe_singleerrom[rn] != null) {
+                Singleroom room = hotel_ob.deluxe_singleerrom[rn];
+                System.out.println("Deluxe Vienvietis " + (rn + 1) + ": " + room.firstName + ' ' + room.lastName);
+            } else {
+                System.out.println("Kambarys nebuvo uzimtas.");
+            }
+            break;
+        case 2:
+            if (hotel_ob.luxury_singleerrom[rn] != null) {
+                Singleroom room = hotel_ob.luxury_singleerrom[rn];
+                System.out.println("Luxury Vienvietis " + (rn + 6) + ": " + room.firstName + ' ' + room.lastName);
+            } else {
+                System.out.println("Kambarys nebuvo uzimtas.");
+            }
+            break;
+        default:
+            System.out.println("Negalimas kambario tipas.");
+            break;
+    }
+}}
 
 class write implements Runnable
 {
@@ -362,13 +384,13 @@ public class Main {
             fin.close();
         }
         Scanner sc = new Scanner(System.in);
-        int ch,ch2;
+        int ch,ch2, ch3;
         char wish;
         x:
         do{
 
         System.out.println("\n************* Viesbutis *************");
-        System.out.println("\nPasirinkite norima veiksma:\n1.Svecio registracija \n2.Svecio isregistravimas \n3.Kambariu uzimtumo perziura \n4.Kambario istorija ir statusas \n5.Maisto ir Gerimu uzsakymas \n9.Iseiti is programos\n");
+        System.out.println("\nPasirinkite norima veiksma:\n1.Svecio registracija \n2.Svecio isregistravimas \n3.Kambariu uzimtumo perziura \n4.Kambario istorija ir statusas \n5.Maisto ir Gerimu uzsakymas \n6. Status  \n9.Iseiti is programos\n");
         ch = sc.nextInt();
         switch(ch){
                 case 1:System.out.println("\nPasirinkti kambario tipa :\n1.Standartinis vienvietis kambarys \n2.Prabangus vienvietis kambarys\n");
@@ -386,11 +408,11 @@ public class Main {
                      else
                          System.out.println("Tokio kambario nera");
                      break;
-                case 3:                   
-                    Hotel.checkStatus();
+                case 3:  
+                    Hotel.listOccupiedRooms();                 
                     break;
                 case 4: 
-                    Hotel.listOccupiedRooms();
+                    Hotel.checkStatus();
                    break;
                 case 5: System.out.print("Kambario numeris -");
                      ch2 = sc.nextInt();
@@ -403,7 +425,18 @@ public class Main {
                      else
                          System.out.println("Tokio kambario nėra");
                      break;
-
+                case 6: System.out.print("Kambario numeris -");
+                     ch3 = sc.nextInt();
+                     if (ch3 > 11) {
+                         System.out.println("Tokio kambario nėra");
+                     } else if (ch3 > 5) {
+                         Hotel.roomBookingHistory(ch3 - 6, 1);
+                     } else if (ch3 > 0) {
+                         Hotel.roomBookingHistory(ch3 - 1, 2);
+                     } else {
+                         System.out.println("Tokio kambario nera");
+                     }
+                     break;
 
             case 9:break x;
                 
