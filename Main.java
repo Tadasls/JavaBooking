@@ -419,9 +419,9 @@ public class Main {
                      if(ch2>11)
                          System.out.println("Tokio kambario nėra");
                      else if(ch2>5)
-                         Hotel.foodOrder(ch2-6,1);
+                         Hotel.foodOrder(ch2-6,2);
                      else if(ch2>0)
-                         Hotel.foodOrder(ch2-1,2);
+                         Hotel.foodOrder(ch2-1,1);
                      else
                          System.out.println("Tokio kambario nėra");
                      break;
@@ -430,9 +430,9 @@ public class Main {
                      if (ch3 > 11) {
                          System.out.println("Tokio kambario nėra");
                      } else if (ch3 > 5) {
-                         Hotel.roomBookingHistory(ch3 - 6, 1);
+                         Hotel.roomBookingHistory(ch3 - 6, 2);
                      } else if (ch3 > 0) {
-                         Hotel.roomBookingHistory(ch3 - 1, 2);
+                         Hotel.roomBookingHistory(ch3 - 1, 1);
                      } else {
                          System.out.println("Tokio kambario nera");
                      }
