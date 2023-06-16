@@ -19,6 +19,7 @@ class Food implements Serializable
         this.quantity=quantity;
         switch(itemno)
         {
+
             case 1:price=quantity*5;
                 break;
             case 2:price=quantity*7;
@@ -91,7 +92,7 @@ class Hotel
         int rn;
         boolean availableRoom = false;
 
-        System.out.println("\nPasirinkite kambario numery is saraso : ");
+       // System.out.println("\nPasirinkite kambario numery is saraso : ");
 
         switch (i) {
             case 1:
@@ -99,16 +100,19 @@ class Hotel
                 {
                     if(hotel_ob.deluxe_singleerrom[j]==null)
                     {
-                        System.out.print(j+1+",");
+                       // System.out.print(j+1+",");
+                        customersDetails(i,j);
+                        System.out.println("Jusu kambario numeris :"+ (j+1));
                         availableRoom = true; 
+                        return;
                     }
                 }
                 if (!availableRoom) {
                     System.out.println("Atsiprasome, Nera laisvu kambariu sio tipo.");
                     return;
                 }
-                System.out.print("\nIveskite kambario numery: ");
-                try{
+                //System.out.print("\nIveskite kambario numery: ");
+               /*  try{
                 rn=sc.nextInt();
                 rn--;
                 if(hotel_ob.deluxe_singleerrom[rn]!=null)
@@ -120,6 +124,7 @@ class Hotel
                     System.out.println("Netinkamas pasirinkimas");
                     return;
                 }
+                */
                 break;
             case 2:
                  for(j=0;j<hotel_ob.luxury_singleerrom.length;j++)
