@@ -7,13 +7,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-class Food implements Serializable
+class Food implements Serializable //extra funkcionalumas - menu kaininikas
 {
     int itemno;
     int quantity;   
     float price;
     
-    Food(int itemno,int quantity)
+    Food(int itemno,int quantity) 
     {
         this.itemno=itemno;
         this.quantity=quantity;
@@ -58,14 +58,15 @@ class NotAvailable extends Exception
 }
 class holder implements Serializable
 {
-    Singleroom deluxe_singleerrom[]=new Singleroom[5];
-    Singleroom luxury_singleerrom[]=new Singleroom[0]; 
+    Singleroom deluxeSingleRoom[]=new Singleroom[5];
+    Singleroom luxurySingleRoom[]=new Singleroom[0]; // jei reiktu praplesti kambariu tipus
 }
 class Hotel
 {
-    static holder hotel_ob=new holder();
+    static holder hotelObject=new holder();
     static Scanner sc = new Scanner(System.in);
-    static void customersDetails(int i,int rn)
+
+    static void enterCustomerData(int i,int rn)
     {
         String firstName, lastName, contact;
         System.out.print("\nIveskite kliento Varda: ");
@@ -76,9 +77,9 @@ class Hotel
         contact=sc.next();
         
           switch (i) {
-            case 1:hotel_ob.deluxe_singleerrom[rn]=new Singleroom(firstName, lastName,contact);
+            case 1:hotelObject.deluxeSingleRoom[rn]=new Singleroom(firstName, lastName,contact);
                 break;
-            case 2:hotel_ob.luxury_singleerrom[rn]=new Singleroom(firstName, lastName, contact);
+            case 2:hotelObject.luxurySingleRoom[rn]=new Singleroom(firstName, lastName, contact);
                 break;
             default:System.out.println("Netinkamas pasirinkimas");
                 break;
@@ -91,43 +92,33 @@ class Hotel
         int rn;
         boolean availableRoom = false;
 
-        System.out.println("\nPasirinkite kambario numery is saraso : ");
-
         switch (i) {
-            case 1:
-                for(j=0;j<hotel_ob.deluxe_singleerrom.length;j++)
+                 case 1:
+                for(j=0;j<hotelObject.deluxeSingleRoom.length;j++)
                 {
-                    if(hotel_ob.deluxe_singleerrom[j]==null)
+                    if(hotelObject.deluxeSingleRoom[j]==null)
                     {
-                        System.out.print(j+1+",");
+            
+                        enterCustomerData(i,j);
+                        System.out.println("Jusu kambario numeris :"+ (j+1));
                         availableRoom = true; 
+                        return;
                     }
                 }
                 if (!availableRoom) {
                     System.out.println("Atsiprasome, Nera laisvu kambariu sio tipo.");
                     return;
                 }
-                System.out.print("\nIveskite kambario numery: ");
-                try{
-                rn=sc.nextInt();
-                rn--;
-                if(hotel_ob.deluxe_singleerrom[rn]!=null)
-                    throw new NotAvailable();
-                    customersDetails(i,rn);
-                }
-                catch(Exception e)
-                {
-                    System.out.println("Netinkamas pasirinkimas");
-                    return;
-                }
+      
                 break;
             case 2:
-                 for(j=0;j<hotel_ob.luxury_singleerrom.length;j++)
+
+                 for(j=0;j<hotelObject.luxurySingleRoom.length;j++)
                 {
 
-                    if(hotel_ob.luxury_singleerrom[j]==null)
+                    if(hotelObject.luxurySingleRoom[j]==null)
                     {
-                        System.out.print(j+5+",");
+                        System.out.print(j+6+",");
                         availableRoom = true;
                     }
                 }
@@ -139,9 +130,9 @@ class Hotel
                 try{
                 rn=sc.nextInt();
                 rn=rn-6;
-                if(hotel_ob.luxury_singleerrom[rn]!=null)
+                if(hotelObject.luxurySingleRoom[rn]!=null)
                     throw new NotAvailable();
-                    customersDetails(i,rn);
+                    enterCustomerData(i,rn);
                 }
                 catch(Exception e)
                 {
@@ -156,7 +147,7 @@ class Hotel
           System.out.println("Kambarys sekmingai rezervuotas");
     }
 
-    static void bill(int rn,int rtype)
+    static void billCustomer(int rn,int rtype)
     {
         double amount=0;
         String list[]={"Sumustinis","Makaronai","Kepsnys","Vynas"};
@@ -172,7 +163,7 @@ class Hotel
             System.out.println("===============");
             System.out.println("Vienetas   Kiekis    Kaina");
             System.out.println("-------------------------");
-            for(Food obb: hotel_ob.deluxe_singleerrom[rn].food)
+            for(Food obb: hotelObject.deluxeSingleRoom[rn].food)
             {
                 amount+=obb.price;
                 String format = "%-10s%-10s%-10s%n";
@@ -185,7 +176,7 @@ class Hotel
                     System.out.println("===============");
                     System.out.println("Vienetas   Kiekis    Kaina");
                     System.out.println("-------------------------");
-                    for(Food obb:hotel_ob.luxury_singleerrom[rn].food)
+                    for(Food obb:hotelObject.luxurySingleRoom[rn].food)
                     {
                         amount+=obb.price;
                         String format = "%-10s%-10s%-10s%n";
@@ -204,8 +195,8 @@ class Hotel
         char w;
         switch (rtype) {
             case 1:               
-            if(hotel_ob.deluxe_singleerrom[rn]!=null)
-                System.out.println("Kambaryje gyvena  "+hotel_ob.deluxe_singleerrom[rn].firstName+ ' ' + hotel_ob.deluxe_singleerrom[rn].lastName);                
+            if(hotelObject.deluxeSingleRoom[rn]!=null)
+                System.out.println("Kambaryje gyvena  "+ hotelObject.deluxeSingleRoom[rn].firstName+ ' ' + hotelObject.deluxeSingleRoom[rn].lastName);                
             else 
             {    
                 System.out.println("Kambarys nebuvo uzimtas");
@@ -215,14 +206,14 @@ class Hotel
              w=sc.next().charAt(0);
             if(w=='t'||w=='T')
             {
-                bill(rn,rtype);
-                hotel_ob.deluxe_singleerrom[rn]=null;
+                billCustomer(rn,rtype);
+                hotelObject.deluxeSingleRoom[rn]=null;
                 System.out.println("Kambarys atlaisvintas");
             }
             break;
              case 2:
-                if(hotel_ob.luxury_singleerrom[rn]!=null)
-                    System.out.println("Kambaryje gyvena "+hotel_ob.luxury_singleerrom[rn].firstName + ' ' + hotel_ob.luxury_singleerrom[rn].lastName);                
+                if(hotelObject.luxurySingleRoom[rn]!=null)
+                    System.out.println("Kambaryje gyvena "+hotelObject.luxurySingleRoom[rn].firstName + ' ' + hotelObject.luxurySingleRoom[rn].lastName);                
                 else 
                  {    
                     System.out.println("Kambarys nebuvo uzimtas");
@@ -232,8 +223,8 @@ class Hotel
                 w=sc.next().charAt(0);
                 if(w=='t'||w=='T')
                 {
-                    bill(rn,rtype);
-                    hotel_ob.luxury_singleerrom[rn]=null;
+                    billCustomer(rn,rtype);
+                    hotelObject.luxurySingleRoom[rn]=null;
                     System.out.println("Kambarys atlaisvintas");
                 }
                 
@@ -257,9 +248,9 @@ class Hotel
             System.out.print("Kiekis- ");
             q=sc.nextInt();
             switch(rtype){
-            case 1: hotel_ob.deluxe_singleerrom[rn].food.add(new Food(i,q));
+            case 1: hotelObject.deluxeSingleRoom[rn].food.add(new Food(i,q));
                 break;   
-            case 2: hotel_ob.luxury_singleerrom[rn].food.add(new Food(i,q));
+            case 2: hotelObject.luxurySingleRoom[rn].food.add(new Food(i,q));
                 break;
                                          
         }
@@ -282,15 +273,15 @@ class Hotel
     System.out.println("\nSarasas uzimtu kambariu:");
     System.out.println("-----------------");
 
-    for (int i = 0; i < hotel_ob.deluxe_singleerrom.length; i++) {
-        if (hotel_ob.deluxe_singleerrom[i] != null) {
-            System.out.println("Uzimtas Deluxe Vienvietis " + (i + 1) + ": Svecio vardas " + hotel_ob.deluxe_singleerrom[i].firstName + " Pavarde " + hotel_ob.deluxe_singleerrom[i].lastName);
+    for (int i = 0; i < hotelObject.deluxeSingleRoom.length; i++) {
+        if (hotelObject.deluxeSingleRoom[i] != null) {
+            System.out.println("Uzimtas Deluxe Vienvietis " + (i + 1) + ": Svecio vardas " + hotelObject.deluxeSingleRoom[i].firstName + " Pavarde " + hotelObject.deluxeSingleRoom[i].lastName);
             occupiedRoomsExist = true;
         }
     }
-    for (int i = 0; i < hotel_ob.luxury_singleerrom.length; i++) {
-        if (hotel_ob.luxury_singleerrom[i] != null) {
-            System.out.println("Uzimtas Luxury Vienvietis " + (i + 6 ) + ": Svecio vardas " + hotel_ob.luxury_singleerrom[i].firstName+ " Pavarde "+ hotel_ob.luxury_singleerrom[i].lastName);
+    for (int i = 0; i < hotelObject.luxurySingleRoom.length; i++) {
+        if (hotelObject.luxurySingleRoom[i] != null) {
+            System.out.println("Uzimtas Luxury Vienvietis " + (i + 6 ) + ": Svecio vardas " + hotelObject.luxurySingleRoom[i].firstName+ " Pavarde "+ hotelObject.luxurySingleRoom[i].lastName);
             occupiedRoomsExist = true;
         }
     }
@@ -303,12 +294,12 @@ class Hotel
     int j;
     boolean availableRoom = false;
 
-            for (j = 0; j < hotel_ob.deluxe_singleerrom.length; j++) {
-                if (hotel_ob.deluxe_singleerrom[j] == null) {
+            for (j = 0; j < hotelObject.deluxeSingleRoom.length; j++) {
+                if (hotelObject.deluxeSingleRoom[j] == null) {
                     System.out.println("Kambarys " + (j + 1) + " - Laisvas");
                 } else {
                     System.out.println("Kambarys " + (j + 1) + " - Uzimtas");
-                    Singleroom room = hotel_ob.deluxe_singleerrom[j];
+                    Singleroom room = hotelObject.deluxeSingleRoom[j];
                     System.out.print(" Vardas: " + room.firstName);
                     System.out.print(" Pavarde: " + room.lastName);
                     System.out.print(" Kontaktinis mob. nr.: " + room.contact);
@@ -326,16 +317,16 @@ static void roomBookingHistory(int rn, int rtype) {
     System.out.println("\nKambario uzsakymo istorija:");
     switch (rtype) {
         case 1:
-            if (hotel_ob.deluxe_singleerrom[rn] != null) {
-                Singleroom room = hotel_ob.deluxe_singleerrom[rn];
+            if (hotelObject.deluxeSingleRoom[rn] != null) {
+                Singleroom room = hotelObject.deluxeSingleRoom[rn];
                 System.out.println("Deluxe Vienvietis " + (rn + 1) + ": " + room.firstName + ' ' + room.lastName);
             } else {
                 System.out.println("Kambarys nebuvo uzimtas.");
             }
             break;
         case 2:
-            if (hotel_ob.luxury_singleerrom[rn] != null) {
-                Singleroom room = hotel_ob.luxury_singleerrom[rn];
+            if (hotelObject.luxurySingleRoom[rn] != null) {
+                Singleroom room = hotelObject.luxurySingleRoom[rn];
                 System.out.println("Luxury Vienvietis " + (rn + 6) + ": " + room.firstName + ' ' + room.lastName);
             } else {
                 System.out.println("Kambarys nebuvo uzimtas.");
@@ -349,17 +340,17 @@ static void roomBookingHistory(int rn, int rtype) {
 
 class write implements Runnable
 {
-    holder hotel_ob;
-    write(holder hotel_ob)
+    holder hotelObject;
+    write(holder hotelObject)
     {
-        this.hotel_ob=hotel_ob;
+        this.hotelObject=hotelObject;
     }
     @Override
     public void run() {
           try{
-        FileOutputStream fout=new FileOutputStream("hotel_data.txt");
+        FileOutputStream fout=new FileOutputStream("hotelData");
         ObjectOutputStream oos=new ObjectOutputStream(fout);
-        oos.writeObject(hotel_ob);
+        oos.writeObject(hotelObject);
         oos.close();
         fout.close();
         }
@@ -374,23 +365,23 @@ public class Main {
         
         try
         {           
-        File f = new File("hotel_data.txt");
+        File f = new File("hotelData");
         if(f.exists())
         {
             FileInputStream fin=new FileInputStream(f);
             ObjectInputStream ois=new ObjectInputStream(fin);
-            Hotel.hotel_ob=(holder)ois.readObject();
+            Hotel.hotelObject=(holder)ois.readObject();
             ois.close();
             fin.close();
         }
         Scanner sc = new Scanner(System.in);
-        int ch,ch2, ch3;
+        int ch,ch2,ch3;
         char wish;
         x:
         do{
 
         System.out.println("\n************* Viesbutis *************");
-        System.out.println("\nPasirinkite norima veiksma:\n1.Svecio registracija \n2.Svecio isregistravimas \n3.Kambariu uzimtumo perziura \n4.Kambario istorija ir statusas \n5.Maisto ir Gerimu uzsakymas \n6. Status  \n9.Iseiti is programos\n");
+        System.out.println("\nPasirinkite norima veiksma:\n1.Svecio registracija \n2.Svecio isregistravimas \n3.Kambariu uzimtumo perziura \n4.Kambario statusas \n5.Kambario istorija  \n6.Maisto ir Gerimu uzsakymas   \n9.Iseiti is programos\n");
         ch = sc.nextInt();
         switch(ch){
                 case 1:System.out.println("\nPasirinkti kambario tipa :\n1.Standartinis vienvietis kambarys \n2.Prabangus vienvietis kambarys\n");
@@ -415,17 +406,6 @@ public class Main {
                     Hotel.checkStatus();
                    break;
                 case 5: System.out.print("Kambario numeris -");
-                     ch2 = sc.nextInt();
-                     if(ch2>11)
-                         System.out.println("Tokio kambario nėra");
-                     else if(ch2>5)
-                         Hotel.foodOrder(ch2-6,2);
-                     else if(ch2>0)
-                         Hotel.foodOrder(ch2-1,1);
-                     else
-                         System.out.println("Tokio kambario nėra");
-                     break;
-                case 6: System.out.print("Kambario numeris -");
                      ch3 = sc.nextInt();
                      if (ch3 > 11) {
                          System.out.println("Tokio kambario nėra");
@@ -436,7 +416,19 @@ public class Main {
                      } else {
                          System.out.println("Tokio kambario nera");
                      }
+                     break;   
+                case 6: System.out.print("Kambario numeris -");
+                     ch2 = sc.nextInt();
+                     if(ch2>11)
+                         System.out.println("Tokio kambario nėra");
+                     else if(ch2>5)
+                         Hotel.foodOrder(ch2-6,2);
+                     else if(ch2>0)
+                         Hotel.foodOrder(ch2-1,1);
+                     else
+                         System.out.println("Tokio kambario nėra");
                      break;
+
 
             case 9:break x;
                 
@@ -452,7 +444,7 @@ public class Main {
             
         }while(wish=='t'||wish=='T');    
         
-        Thread t=new Thread(new write(Hotel.hotel_ob));
+        Thread t=new Thread(new write(Hotel.hotelObject));
         t.start();
         }        
             catch(Exception e)
