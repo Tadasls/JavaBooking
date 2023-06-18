@@ -13,7 +13,6 @@ import com.opencsv.CSVWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-
 class Food implements Serializable //extra funkcionalumas - menu kaininikas
 {
     int itemno;
