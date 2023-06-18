@@ -5,7 +5,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
+import com.opencsv.CSVWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 
 class Food implements Serializable //extra funkcionalumas - menu kaininikas
 {
@@ -62,6 +69,28 @@ class holder implements Serializable
     Singleroom deluxeSingleRoom[]=new Singleroom[5];
     Singleroom luxurySingleRoom[]=new Singleroom[0]; // jei reiktu praplesti kambariu tipus
 }
+class RoomBooking {
+    public int rn;
+    public String firstName;
+    public String lastName;
+    
+    public RoomBooking(int rn, String firstName, String lastName) {
+        this.rn = rn;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+       public int getRoomNumber() {
+        return rn;
+    }
+
+        @Override
+    public String toString() {
+        return "Kambario rezervacijos: [Kambario numeris: " + rn + ", Vardas: " + firstName + ", Pavarde: " + lastName + "]";
+    }
+    
+}
+
 class Hotel
 {
     static holder hotelObject=new holder();
@@ -79,6 +108,7 @@ class Hotel
         
           switch (i) {
             case 1:hotelObject.deluxeSingleRoom[rn]=new Singleroom(firstName, lastName,contact);
+             writeRoomBooking(rn, firstName, lastName);
                 break;
             case 2:hotelObject.luxurySingleRoom[rn]=new Singleroom(firstName, lastName, contact);
                 break;
@@ -311,7 +341,7 @@ class Hotel
         
 }
 
-static void roomBookingHistory(int rn, int rtype) {
+    static void roomBookingHistory(int rn, int rtype) {
     System.out.println("\nKambario uzsakymo istorija:");
     switch (rtype) {
         case 1:
@@ -334,7 +364,50 @@ static void roomBookingHistory(int rn, int rtype) {
             System.out.println("Negalimas kambario tipas.");
             break;
     }
-}}
+}
+
+   static final String CSV_FILE_PATH = "roomBookings.csv";
+   static void writeRoomBooking(Integer rn, String firstName, String lastName) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(CSV_FILE_PATH, true))) {
+              int modifiedRn = rn + 1;
+        String[] data = {String.valueOf(modifiedRn), firstName, lastName};
+            writer.writeNext(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class RoomBookingManager {
+    public List<RoomBooking> bookings;
+    public RoomBookingManager() { bookings = new ArrayList<>(); }
+
+public void loadBookingsFromCSV(String filename) {
+    try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            int rn = Integer.parseInt(data[0].replaceAll("\"", ""));
+            String firstName = data[1].replaceAll("\"", "");
+            String lastName = data[2].replaceAll("\"", "");
+            RoomBooking booking = new RoomBooking(rn, firstName, lastName);
+            bookings.add(booking);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+    
+    public void displayBookingHistory(int rn) {
+        System.out.println("Kambario rezervaciju istorija " + rn + ":");
+        for (RoomBooking booking : bookings) {
+            if (booking.getRoomNumber() == rn) {
+                System.out.println(booking);
+            }
+        }
+    }
+
+}
 
 class write implements Runnable
 {
@@ -360,7 +433,10 @@ class write implements Runnable
 
 public class Main {
     public static void main(String[] args){
-        
+
+        RoomBookingManager manager = new RoomBookingManager();
+        manager.loadBookingsFromCSV("roomBookings.csv"); 
+
         try
         {           
         File f = new File("hotelData");
@@ -408,9 +484,9 @@ public class Main {
                      if (ch3 > 11) {
                          System.out.println("Tokio kambario nėra");
                      } else if (ch3 > 5) {
-                         Hotel.roomBookingHistory(ch3 - 6, 2);
+                          manager.displayBookingHistory(ch3);
                      } else if (ch3 > 0) {
-                         Hotel.roomBookingHistory(ch3 - 1, 1);
+                            manager.displayBookingHistory(ch3);
                      } else {
                          System.out.println("Tokio kambario nera");
                      }
