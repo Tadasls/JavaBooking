@@ -19,6 +19,7 @@ class Food implements Serializable //extra funkcionalumas - menu kaininikas
         this.quantity=quantity;
         switch(itemno)
         {
+
             case 1:price=quantity*5;
                 break;
             case 2:price=quantity*7;
@@ -91,14 +92,12 @@ class Hotel
         int j;
         int rn;
         boolean availableRoom = false;
-
         switch (i) {
                  case 1:
                 for(j=0;j<hotelObject.deluxeSingleRoom.length;j++)
                 {
                     if(hotelObject.deluxeSingleRoom[j]==null)
                     {
-            
                         enterCustomerData(i,j);
                         System.out.println("Jusu kambario numeris :"+ (j+1));
                         availableRoom = true; 
@@ -109,7 +108,6 @@ class Hotel
                     System.out.println("Atsiprasome, Nera laisvu kambariu sio tipo.");
                     return;
                 }
-      
                 break;
             case 2:
 
